@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import AdminExchangesPageClient from '@/components/AdminExchangesPageClient'
+import AdminExchangesPageClient from '@/components/ClientPages/AdminExchangesPageClient'
 
 export const metadata: Metadata = {
   title: 'Админ панель - Заявки - Криптообменник',

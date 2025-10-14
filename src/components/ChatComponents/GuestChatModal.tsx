@@ -10,6 +10,7 @@ import { useStore } from '@/store/StoreProvider';
 import ChatHeader from './ChatHeader';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 interface GuestChatModalProps {
     isOpen: boolean;
@@ -41,10 +42,12 @@ const GuestChatModal: React.FC<GuestChatModalProps> = observer(({ isOpen, onClos
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="bg-gradient-to-br from-black/90 to-gray-900/95 border-white/10 rounded-2xl p-0 max-w-md w-full max-h-[80vh] h-[600px] flex flex-col overflow-hidden backdrop-blur-xl shadow-2xl">
-                <DialogHeader className="p-0">
-                    <DialogTitle className="sr-only">Гостевой чат с администратором</DialogTitle>
-                </DialogHeader>
+            <DialogContent className="sm:max-w-md bg-gradient-to-br from-gray-900 to-emerald-900 border-none rounded-2xl p-0 max-h-[80vh] h-[600px] flex flex-col overflow-hidden backdrop-blur-xl shadow-2xl">
+                <VisuallyHidden>
+                    <DialogHeader className="p-0">
+                        <DialogTitle className="sr-only">Гостевой чат с администратором</DialogTitle>
+                    </DialogHeader>
+                </VisuallyHidden>
 
                 <div className="flex flex-col h-full overflow-hidden">
                     <ChatHeader onClose={handleClose} />

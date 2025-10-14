@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import AuthPageClient from '@/components/AuthPageClient'
+import AuthPageClient from '@/components/ClientPages/AuthPageClient'
 
 export const metadata: Metadata = {
   title: 'Авторизация - Криптообменник',

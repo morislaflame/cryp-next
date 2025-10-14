@@ -251,8 +251,14 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
                     alt={fromCurrency.name}
                     className="w-6 h-6 object-contain"
                   />
+                ) : fromCurrency.icon && typeof fromCurrency.icon === 'object' && 'src' in fromCurrency.icon ? (
+                  <img 
+                    src={fromCurrency.icon.src} 
+                    alt={fromCurrency.name}
+                    className="w-6 h-6 object-contain"
+                  />
                 ) : (
-                  <span className="text-lg">{fromCurrency.icon as string}</span>
+                  <span className="text-lg">{typeof fromCurrency.icon === 'string' ? fromCurrency.icon : fromCurrency.symbol}</span>
                 )}
                     {/* <span className="currency-symbol" >
                       {fromCurrency.symbol}
@@ -360,8 +366,14 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
                     alt={toCurrency.name}
                     className="w-6 h-6 object-contain"
                   />
+                ) : toCurrency?.icon && typeof toCurrency.icon === 'object' && 'src' in toCurrency.icon ? (
+                  <img 
+                    src={toCurrency.icon.src} 
+                    alt={toCurrency.name}
+                    className="w-6 h-6 object-contain"
+                  />
                 ) : (
-                  <span className="text-lg">{toCurrency?.icon as string}</span>
+                  <span className="text-lg">{typeof toCurrency?.icon === 'string' ? toCurrency.icon : toCurrency?.symbol}</span>
                 )}
                 <div className="flex flex-col items-end">
                   <span className="text-xs text-white/50">{selectedNetwork?.name}</span>
@@ -415,8 +427,14 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
                     alt={toCurrency.name}
                     className="w-6 h-6 object-contain"
                   />
+                ) : toCurrency?.icon && typeof toCurrency.icon === 'object' && 'src' in toCurrency.icon ? (
+                  <img 
+                    src={toCurrency.icon.src} 
+                    alt={toCurrency.name}
+                    className="w-6 h-6 object-contain"
+                  />
                 ) : (
-                  <span className="text-2xl">{toCurrency?.icon as string}</span>
+                  <span className="text-2xl">{typeof toCurrency?.icon === 'string' ? toCurrency.icon : toCurrency?.symbol}</span>
                 )}
               </div>
             </div>

@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import ExchangePageClient from '@/components/ExchangePageClient'
+import ExchangePageClient from '@/components/ClientPages/ExchangePageClient'
 
 export const metadata: Metadata = {
   title: 'Обменник криптовалют - Быстрый обмен USDT, BTC, ETH',
