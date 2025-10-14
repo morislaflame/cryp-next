@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import ProfilePageClient from '@/components/ProfilePageClient'
+import ProfilePageClient from '@/components/ClientPages/ProfilePageClient'
 
 export const metadata: Metadata = {
   title: 'Профиль - Криптообменник',

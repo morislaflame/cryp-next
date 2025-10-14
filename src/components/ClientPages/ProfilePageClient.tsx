@@ -1,95 +1,307 @@
 'use client'
 
-import { useContext, useEffect } from 'react';
-import { Context, type IStoreContext } from '@/store/StoreProvider';
+import { observer } from 'mobx-react-lite';
+import { useEffect, useState } from 'react';
+import { useStore } from '@/store/StoreProvider';
+import { type Exchange } from '@/http/exchangeAPI';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { formatAmount } from '@/utils/formatNumbers';
+import { getProfileCurrencySymbol, getProfileCurrency } from '@/utils/currencyFormatting';
+import { type Currency } from '@/types/currency';
+// import { format } from 'date-fns';
+// import { ru } from 'date-fns/locale';
 
-const ProfilePageClient = () => {
-  const { user } = useContext(Context) as IStoreContext;
+const ProfilePageClient = observer(() => {
+  const { user, exchange } = useStore();
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
 
   useEffect(() => {
     if (user.isAuth) {
-      user.fetchMyInfo();
+      exchange.fetchUserExchanges();
     }
-  }, [user]);
+  }, [user.isAuth, exchange]);
 
-  const handleLogout = () => {
-    user.logout();
+  const handleStatusFilter = (status: string) => {
+    setSelectedStatus(status);
+    exchange.fetchUserExchanges(status);
   };
+
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'secondary';
+      case 'CONFIRMED':
+        return 'default';
+      case 'PROCESSING':
+        return 'outline';
+      case 'COMPLETED':
+        return 'default';
+      case 'CANCELLED':
+        return 'destructive';
+      case 'FAILED':
+        return 'destructive';
+      default:
+        return 'secondary';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'Ожидает';
+      case 'CONFIRMED':
+        return 'Подтверждена';
+      case 'PROCESSING':
+        return 'В обработке';
+      case 'COMPLETED':
+        return 'Завершена';
+      case 'CANCELLED':
+        return 'Отменена';
+      case 'FAILED':
+        return 'Не удалась';
+      default:
+        return status;
+    }
+  };
+
+  const handleCancelExchange = async (id: number) => {
+    if (window.confirm('Вы уверены, что хотите отменить эту заявку?')) {
+      await exchange.cancelExchange(id);
+      exchange.fetchUserExchanges(selectedStatus);
+    }
+  };
+
+  const handleLogout = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        user.logout();
+      };
+
 
   if (!user.isAuth) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">Доступ запрещен</CardTitle>
-            <CardDescription className="text-center">
-              Для доступа к профилю необходимо войти в аккаунт
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
-              <a href="/auth">Войти в аккаунт</a>
-            </Button>
-          </CardContent>
+      <div className="min-h-screen flex items-center justify-center max-w-[80vw] mx-auto">
+        <Card className="p-8 text-center">
+          <h1 className="text-2xl font-bold text-white mb-2">Необходима авторизация</h1>
+          <p className="text-gray-300">Для просмотра профиля необходимо войти в систему</p>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-16">
-      <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">Профиль</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Информация о пользователе</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Email</label>
-                  <p className="text-lg">{user.user?.email}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Имя пользователя</label>
-                  <p className="text-lg">{user.user?.username}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Роль</label>
-                  <p className="text-lg">{user.user?.role}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Действия</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Button 
-                  onClick={handleLogout}
-                  variant="outline"
-                  className="w-full"
-                >
-                  Выйти из аккаунта
-                </Button>
-                
-                <Button asChild className="w-full bg-emerald-600 hover:bg-emerald-700">
-                  <a href="/exchange">Перейти к обмену</a>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        {/* Заголовок профиля */}
+        <div className="mb-8 flex justify-between items-center">
+            <div>
+          <h1 className="text-2xl font-bold text-white mb-2">Мой профиль</h1>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              {user.user?.email?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div>
+              <p className="text-white text-lg">{user.user?.email}</p>
+              <p className="text-gray-300 text-sm">
+                {user.user?.role === 'ADMIN' ? 'Администратор' : 'Пользователь'}
+              </p>
+            </div>
+          </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 hover:border-red-500/50 rounded-lg text-red-400 hover:text-red-300 transition-all duration-300 backdrop-blur-sm cursor-pointer text-sm"
+        >
+            Выйти
+        </button>
         </div>
+
+        {/* Фильтры статусов */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Мои заявки</h2>
+          <div className="flex flex-wrap gap-2 mb-6">
+            <Button
+              variant={selectedStatus === '' ? 'default' : 'outline'}
+              onClick={() => handleStatusFilter('')}
+              className="text-sm"
+            >
+              Все
+            </Button>
+            <Button
+              variant={selectedStatus === 'PENDING' ? 'default' : 'outline'}
+              onClick={() => handleStatusFilter('PENDING')}
+              className="text-sm"
+            >
+              Ожидают
+            </Button>
+            <Button
+              variant={selectedStatus === 'CONFIRMED' ? 'default' : 'outline'}
+              onClick={() => handleStatusFilter('CONFIRMED')}
+              className="text-sm"
+            >
+              Подтверждены
+            </Button>
+            <Button
+              variant={selectedStatus === 'PROCESSING' ? 'default' : 'outline'}
+              onClick={() => handleStatusFilter('PROCESSING')}
+              className="text-sm"
+            >
+              В обработке
+            </Button>
+            <Button
+              variant={selectedStatus === 'COMPLETED' ? 'default' : 'outline'}
+              onClick={() => handleStatusFilter('COMPLETED')}
+              className="text-sm"
+            >
+              Завершены
+            </Button>
+            <Button
+              variant={selectedStatus === 'CANCELLED' ? 'default' : 'outline'}
+              onClick={() => handleStatusFilter('CANCELLED')}
+              className="text-sm"
+            >
+              Отменены
+            </Button>
+          </div>
+        </div>
+
+        {/* Список заявок */}
+        {exchange.loading ? (
+          <div className="flex justify-center items-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          </div>
+        ) : exchange.exchanges.length === 0 ? (
+          <Card className="p-8 text-center">
+            <h3 className="text-xl font-semibold text-white mb-2">Заявки не найдены</h3>
+            <p className="text-gray-300">
+              {selectedStatus ? 'Нет заявок с выбранным статусом' : 'У вас пока нет заявок на обмен'}
+            </p>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {exchange.exchanges.map((exchangeItem: Exchange) => (
+              <Card key={exchangeItem.id} className="p-6 bg-white/5 backdrop-blur-sm border-white/10">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      Заявка #{exchangeItem.id}
+                    </h3>
+                    {/* <p className="text-gray-300 text-sm">
+                      Создана: {format(new Date(exchangeItem.createdAt), 'dd.MM.yyyy HH:mm', { locale: ru })}
+                    </p> */}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={getStatusBadgeVariant(exchangeItem.status)}>
+                      {getStatusText(exchangeItem.status)}
+                    </Badge>
+                    {exchangeItem.status === 'PENDING' && (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleCancelExchange(exchangeItem.id)}
+                      >
+                        Отменить
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Отправка */}
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-gray-300 mb-2">Отправляете</h4>
+                    <div className="text-white font-semibold text-lg">
+                      {formatAmount(exchangeItem.from.amount, getProfileCurrency(exchangeItem.from.currency as Currency, exchangeItem.from.paymentCurrencyName))} {getProfileCurrencySymbol(exchangeItem.from.currency as Currency, exchangeItem.from.paymentCurrencyName)}
+                    </div>
+                    {exchangeItem.from.bankName && (
+                      <p className="text-gray-300 text-sm mt-1">
+                        Банк: {exchangeItem.from.bankName}
+                      </p>
+                    )}
+                    {exchangeItem.from.networkName && (
+                      <p className="text-gray-300 text-sm">
+                        Сеть: {exchangeItem.from.networkName}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Получение */}
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-gray-300 mb-2">Получаете</h4>
+                    <div className="text-white font-semibold text-lg">
+                      {formatAmount(exchangeItem.to.amount, getProfileCurrency(exchangeItem.to.currency as Currency, exchangeItem.to.paymentCurrencyName))} {getProfileCurrencySymbol(exchangeItem.to.currency as Currency, exchangeItem.to.paymentCurrencyName)}
+                    </div>
+                    {exchangeItem.to.bankName && (
+                      <p className="text-gray-300 text-sm mt-1">
+                        Банк: {exchangeItem.to.bankName}
+                      </p>
+                    )}
+                    {exchangeItem.to.networkName && (
+                      <p className="text-gray-300 text-sm">
+                        Сеть: {exchangeItem.to.networkName}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Реквизиты */}
+                {(exchangeItem.recipientAddress || exchangeItem.recipientCard || exchangeItem.recipientPaymentDetails) && (
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-gray-300 mb-2">Реквизиты для получения</h4>
+                    <div className="bg-white/5 rounded-lg p-3">
+                      {exchangeItem.recipientAddress && (
+                        <p className="text-white text-sm mb-1">
+                          <span className="text-gray-300">Адрес:</span> {exchangeItem.recipientAddress}
+                        </p>
+                      )}
+                      {exchangeItem.recipientCard && (
+                        <p className="text-white text-sm mb-1">
+                          <span className="text-gray-300">Карта/телефон:</span> {exchangeItem.recipientCard}
+                        </p>
+                      )}
+                      {exchangeItem.recipientPaymentDetails && (
+                        <p className="text-white text-sm">
+                          <span className="text-gray-300">Детали:</span> {exchangeItem.recipientPaymentDetails}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Комиссия и курс */}
+                <div className="flex justify-between items-center text-sm">
+                  <div className="text-gray-300">
+                    Комиссия: {formatAmount(exchangeItem.feeAmount || '0', getProfileCurrency(exchangeItem.to.currency as Currency, exchangeItem.to.paymentCurrencyName))} {getProfileCurrencySymbol(exchangeItem.to.currency as Currency, exchangeItem.to.paymentCurrencyName)} ({exchangeItem.feePercent}%)
+                  </div>
+                  {exchangeItem.exchangeRate && (
+                    <div className="text-gray-300">
+                      Курс: {exchangeItem.exchangeRate}
+                    </div>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {exchange.error && (
+          <Card className="p-4 bg-red-500/10 border-red-500/20 mt-4">
+            <p className="text-red-300">{exchange.error}</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exchange.clearError()}
+              className="mt-2"
+            >
+              Закрыть
+            </Button>
+          </Card>
+        )}
       </div>
     </div>
   );
-};
+});
 
 export default ProfilePageClient;
+

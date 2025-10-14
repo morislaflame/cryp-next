@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const HeroSection = () => {
   return (
-    <section className="md:min-h-screen flex md:items-center justify-center px-4 py-8">
+    <section className="md:min-h-screen md:py-8 flex md:items-center justify-center px-4 py-18">
       <div className="max-w-4xl mx-auto text-center">
         <h1 className="md:text-6xl text-4xl font-bold  mb-6 leading-tight">
           Обмен криптовалют в Москве — быстро, безопасно и выгодно
