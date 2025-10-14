@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
-import { LOGIN_ROUTE, MAIN_ROUTE } from '@/utils/consts';
+import { LOGIN_ROUTE, EXCHANGE_ROUTE } from '@/utils/consts';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/store/StoreProvider';
@@ -192,7 +192,7 @@ const CardNav: React.FC<CardNavProps> = ({
         style={{ backgroundColor: baseColor }}
       >
         <div className="absolute top-0 left-0 right-0 h-[60px] flex items-center justify-between px-[1.1rem] z-[2] md:px-[1.1rem] px-4">
-          <Link href={MAIN_ROUTE} className="flex items-center cursor-pointer">
+          <Link href={EXCHANGE_ROUTE} className="flex items-center cursor-pointer">
             <img src={logo} alt={logoAlt} className="h-7" />
           </Link>
           

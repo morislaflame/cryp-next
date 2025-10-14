@@ -6,7 +6,7 @@ import UserStore from "@/store/UserStore";
 import ChatStore from "@/store/ChatStore";
 import ExchangeStore from "@/store/ExchangeStore";
 import ExchangeRatesStore from "@/store/ExchangeRatesStore";
-// Определяем интерфейс для нашего контекста
+
 export interface IStoreContext {
   user: UserStore;
   chat: ChatStore;
@@ -14,9 +14,9 @@ export interface IStoreContext {
   exchangeRates: ExchangeRatesStore;
 }
 
+// Создаем единственный экземпляр сторов
 let storeInstance: IStoreContext | null = null;
 
-// Функция для получения экземпляра хранилища
 export function getStore(): IStoreContext {
   if (!storeInstance) {
     throw new Error("Store not initialized");
@@ -24,7 +24,6 @@ export function getStore(): IStoreContext {
   return storeInstance;
 }
 
-// Хук для использования сторов в компонентах
 export function useStore(): IStoreContext {
   const context = useContext(Context);
   if (!context) {
@@ -33,53 +32,47 @@ export function useStore(): IStoreContext {
   return context;
 }
 
-// Создаем контекст с начальным значением null, но указываем правильный тип
 export const Context = createContext<IStoreContext | null>(null);
 
-// Добавляем типы для пропсов
 interface StoreProviderProps {
   children: ReactNode;
 }
 
 const StoreProvider = ({ children }: StoreProviderProps) => {
-  const [stores, setStores] = useState<{
-    user: UserStore;
-    chat: ChatStore;
-    exchange: ExchangeStore;
-    exchangeRates: ExchangeRatesStore;
-  } | null>(null);
+  const [stores, setStores] = useState<IStoreContext | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     // Проверяем, что мы на клиенте
     if (typeof window === 'undefined') return;
     
-    const loadStores = async () => {
-      try {
-        const [
-          { default: UserStore },
-          { default: ChatStore },
-          { default: ExchangeStore },
-          { default: ExchangeRatesStore },
-        ] = await Promise.all([
-          import("@/store/UserStore"),
-          import("@/store/ChatStore"),
-          import("@/store/ExchangeStore"),
-          import("@/store/ExchangeRatesStore"),
-        ]);
+    // Если уже инициализированы, не делаем это снова
+    if (isInitialized) return;
 
-        setStores({
-          user: new UserStore(),
-          chat: new ChatStore(),
-          exchange: new ExchangeStore(),
-          exchangeRates: new ExchangeRatesStore(),
-        });
+    const initializeStores = () => {
+      try {
+        // Создаем сторы только один раз
+        if (!storeInstance) {
+          storeInstance = {
+            user: new UserStore(),
+            chat: new ChatStore(),
+            exchange: new ExchangeStore(),
+            exchangeRates: new ExchangeRatesStore(),
+          };
+        }
+
+        setStores(storeInstance);
+        setIsInitialized(true);
+
+        // Проверяем авторизацию после создания stores
+        storeInstance.user.checkAuth();
       } catch (error) {
-        console.error('Error loading stores:', error);
+        console.error('Error initializing stores:', error);
       }
     };
 
-    loadStores();
-  }, []);
+    initializeStores();
+  }, [isInitialized]);
 
   // Если мы на сервере, возвращаем children без StoreProvider
   if (typeof window === 'undefined') {
@@ -87,11 +80,8 @@ const StoreProvider = ({ children }: StoreProviderProps) => {
   }
 
   if (!stores) {
-    return <LoadingIndicator />; // Use custom loading indicator
+    return <LoadingIndicator />;
   }
-
-  // Сохраняем экземпляр хранилища для доступа из других модулей
-  storeInstance = stores;
 
   return <Context.Provider value={stores}>{children}</Context.Provider>;
 };
