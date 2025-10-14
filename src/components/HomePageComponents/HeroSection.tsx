@@ -3,16 +3,16 @@ import Link from "next/link";
 
 const HeroSection = () => {
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 py-8">
+    <section className="md:min-h-screen flex md:items-center justify-center px-4 py-8">
       <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-4xl md:text-6xl font-bold  mb-6 leading-tight">
+        <h1 className="md:text-6xl text-4xl font-bold  mb-6 leading-tight">
           Обмен криптовалют в Москве — быстро, безопасно и выгодно
         </h1>
         
-        <p className="text-xl md:text-2xl text-default-700 mb-8 leading-relaxed">
+        <p className="text-lg md:text-xl text-emerald-400/90 mb-8 leading-relaxed">
           Обменяйте USDT, BTC, ETH и другие криптовалюты на рубли.<br />
           Наличными в офисе или онлайн переводом.<br />
-          Курс выше рынка, без скрытых комиссий, 24/7.
+          
         </p>
 
         <div className="mb-8">
@@ -28,6 +28,7 @@ const HeroSection = () => {
 
         <p className="text-sm text-default-700">
           Без верификации • Конфиденциально • Более 5000 успешных сделок
+          Курс выше рынка, без скрытых комиссий, 24/7.
         </p>
       </div>
     </section>

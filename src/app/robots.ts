@@ -5,6 +5,6 @@ export default function robots() {
         allow: '/',
         disallow: ['/admin/', '/api/', '/profile/'],
       },
-      sitemap: 'https://yourdomain.com/sitemap.xml',
+      sitemap: 'https://anonex.ru/sitemap.xml',
     }
   }

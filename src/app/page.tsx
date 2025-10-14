@@ -16,14 +16,14 @@ export const metadata: Metadata = {
     title: 'Обмен криптовалют в Москве — быстро, безопасно и выгодно',
     description: 'Обменяйте USDT, BTC, ETH и другие криптовалюты на рубли. Наличными в офисе или онлайн переводом.',
     type: 'website',
-    url: 'https://yourdomain.com',
+    url: 'https://anonex.ru',
     siteName: 'Криптообменник',
   },
   robots: {
     index: true,
     follow: true,
   },
-  metadataBase: new URL('https://yourdomain.com'),
+  metadataBase: new URL('https://anonex.ru'),
 }
 
 export default function HomePage() {

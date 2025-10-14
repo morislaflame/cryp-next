@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: 'FAQ - Часто задаваемые вопросы - Криптообменник',
     description: 'Ответы на часто задаваемые вопросы о нашем сервисе обмена криптовалют',
     type: 'website',
-    url: 'https://yourdomain.com/faq',
+    url: 'https://anonex.ru/faq',
     siteName: 'Криптообменник',
   }
 }

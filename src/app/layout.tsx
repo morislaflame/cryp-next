@@ -18,14 +18,14 @@ export const metadata: Metadata = {
     title: 'Криптообменник - Быстрый обмен криптовалют',
     description: 'Обменивайте криптовалюты быстро и безопасно',
     type: 'website',
-    url: 'https://yourdomain.com',
+    url: 'https://anonex.ru',
     siteName: 'Криптообменник',
   },
   robots: {
     index: true,
     follow: true,
   },
-  metadataBase: new URL('https://yourdomain.com'),
+  metadataBase: new URL('https://anonex.ru'),
 }
 
 export default function RootLayout({
