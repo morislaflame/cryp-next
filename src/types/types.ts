@@ -46,4 +46,6 @@ export interface Chat {
         role: string;
     }>;
     messages?: ChatMessage[];
+    hasUnreadMessages?: boolean; // Есть ли непрочитанные сообщения (для админа)
+    unreadCount?: number; // Количество непрочитанных сообщений (для админа)
 }

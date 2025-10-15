@@ -12,6 +12,8 @@ export interface Chat {
         role: string;
     }>;
     messages?: ChatMessage[];
+    hasUnreadMessages?: boolean;
+    unreadCount?: number;
 }
 
 export interface CreateChatResponse {

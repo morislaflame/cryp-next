@@ -264,6 +264,13 @@ export default class ChatStore {
             const chats = await getActiveChatsAdmin();
             runInAction(() => {
                 this.setChats(chats);
+                
+                this.clearUnreadChats();
+                chats.forEach(chat => {
+                    if (chat.hasUnreadMessages) {
+                        this.addUnreadChat(chat.id);
+                    }
+                });
             });
         } catch (error) {
             console.error('Error fetching active chats:', error);

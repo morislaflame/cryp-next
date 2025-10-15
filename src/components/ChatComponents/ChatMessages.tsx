@@ -8,9 +8,13 @@ interface ChatMessagesProps {
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (containerRef.current && messagesEndRef.current) {
+            // Прокручиваем только внутри контейнера чата, а не всю страницу
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
     };
 
     useEffect(() => {
@@ -18,7 +22,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
     }, [messages]);
 
     return (
-        <div className="flex-1 overflow-hidden overflow-y-auto hide-scrollbar ios-scroll">
+        <div ref={containerRef} className="flex-1 overflow-hidden overflow-y-auto hide-scrollbar ios-scroll">
             <div className="flex-1 px-4 py-2">
                 {messages.length === 0 ? (
                     <div className="flex items-center justify-center h-full min-h-[200px]">
