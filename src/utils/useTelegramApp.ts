@@ -1,7 +1,53 @@
 import { useCallback } from 'react';
+import { type Root as ReactDOMRoot } from 'react-dom/client';
+
+interface TelegramWebApp {
+  initData: string;
+  initDataUnsafe: string;
+  WebApp?: {
+    initData: string;
+    initDataUnsafe: string;
+    HapticFeedback?: {
+      impactOccurred: (style: string) => void;
+    };
+    openInvoice: (url: string, callback: (status: string) => void) => void;
+    BackButton: {
+      show: () => void;
+      hide: () => void;
+      onClick: (callback: () => void) => void;
+      offClick: (callback: () => void) => void;
+    };
+    openTelegramLink: (url: string) => void;
+    openLink: (url: string) => void;
+    disableVerticalSwipes: () => void;
+    enableVerticalSwipes: () => void;
+    lockOrientation: () => void;
+    unlockOrientation: () => void;
+    expand: () => void;
+    close: () => void;
+    ready: () => void;
+    setHeaderColor: (color: string) => void;
+    setBackgroundColor: (color: string) => void;
+    shareMessage: (msgId: string, callback?: (success: boolean) => void) => void;
+    showPopup: (options: { title: string; message: string; buttons: { type: string; text: string }[] }) => void;
+    Gyroscope?: {
+      isStarted: boolean;
+      x: number;
+      y: number;
+      z: number;
+      start: (params: { refresh_rate?: number }) => void;
+      stop: () => void;
+    };
+  };
+}
+
+interface Window {
+  Telegram?: TelegramWebApp;
+  __REACT_ROOT__?: ReactDOMRoot;
+}
 
 export const useTelegramApp = () => {
-  const tg = window.Telegram?.WebApp;
+  const tg = (window as Window).Telegram?.WebApp;
 
   const disableVerticalSwipes = useCallback(() => {
     if (tg && tg.disableVerticalSwipes) {
@@ -58,8 +104,13 @@ export const useTelegramApp = () => {
   }, [tg]);
 
   const getStartParam = useCallback(() => {
-    if (tg?.initDataUnsafe?.start_param) {
-      return tg.initDataUnsafe.start_param;
+    if (tg?.initDataUnsafe && typeof tg.initDataUnsafe === 'string' && tg.initDataUnsafe.includes('start_param')) {
+      const startParam = tg.initDataUnsafe.split('start_param=')[1];
+      return startParam.split('&')[0];
+    }
+    if (tg?.initDataUnsafe && typeof tg.initDataUnsafe === 'string' && tg.initDataUnsafe.includes('start_param')) {
+      const startParam = tg.initDataUnsafe.split('start_param=')[1];
+      return startParam.split('&')[0];
     }
     return null;
   }, [tg]);

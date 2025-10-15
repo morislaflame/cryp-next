@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
               <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center mr-3">
                 <span className="text-white font-bold text-lg">₿</span>
               </div>
-              <h3 className="text-xl font-bold text-white">CryptoExchange</h3>
+              <h3 className="text-xl font-bold text-white">AnonEx</h3>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-4">
               Безопасная и быстрая платформа для обмена криптовалют. 
@@ -131,7 +131,7 @@ const Footer: React.FC = () => {
         {/* Нижняя часть */}
         <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
           <div className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2024 CryptoExchange. Все права защищены.
+            © 2025 AnonEx. Все права защищены.
           </div>
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2">
