@@ -4,12 +4,22 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/store/StoreProvider';
 import CardNav from './CardNav';
 import logo from '@/assets/logo.png';
-import { ADMIN_CHATS_ROUTE, ADMIN_EXCHANGES_ROUTE, RULES_ROUTE, AML_ROUTE, FAQ_ROUTE } from '@/utils/consts';
+import { ADMIN_CHATS_ROUTE, ADMIN_EXCHANGES_ROUTE, RULES_ROUTE, AML_ROUTE, FAQ_ROUTE, EXCHANGE_ROUTE } from '@/utils/consts';
 
 const Navigation = observer(() => {
   const { user } = useStore();
 
   const baseItems = [
+    {
+      label: "Обмен валют",
+      bgColor: "#0D4F3C",
+      textColor: "#fff",
+      description: "Быстрый и безопасный обмен криптовалют и фиатных валют",
+      href: EXCHANGE_ROUTE,
+      links: [
+        { label: "Обмен", href: EXCHANGE_ROUTE, ariaLabel: "Exchange" }
+      ]
+    },
     {
       label: "Правила обмена",
       bgColor: "#0D0716",
