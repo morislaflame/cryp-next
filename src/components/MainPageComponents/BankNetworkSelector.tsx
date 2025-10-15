@@ -49,11 +49,17 @@ const OptionCard: React.FC<OptionCardProps> = ({
             }
           `}>
             {option.icon ? (
+              typeof option.icon === 'object' && 'src' in option.icon ? (
                 <img 
-                  src={option.icon as string} 
+                  src={option.icon.src} 
                   alt={option.name}
-                  className="w-4 h-4 object-contain"
+                  className="w-8 h-8 object-contain"
                 />
+              ) : typeof option.icon === 'string' ? (
+                <span className="text-sm">{option.icon}</span>
+              ) : (
+                option.name.charAt(0)
+              )
             ) : (
               // Если иконки нет - первая буква названия
               option.name.charAt(0)
