@@ -1,5 +1,3 @@
-import { Metadata } from 'next'
-
 export interface FaqItem {
   question: string
   answer: string

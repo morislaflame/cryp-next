@@ -3,9 +3,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Context, type IStoreContext } from '@/store/StoreProvider';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AuthPageClient = () => {
   const { user } = useContext(Context) as IStoreContext;

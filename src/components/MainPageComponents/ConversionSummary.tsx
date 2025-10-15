@@ -9,7 +9,6 @@ import { type CreateExchangeData } from '../../http/exchangeAPI';
 import { validationService } from '../../services/validationService';
 import { type ExchangeValidationData } from '../../types/validation';
 import { formatAmount, formatExchangeRate } from '../../utils/formatNumbers';
-import { getDisplayCurrencySymbol } from '../../utils/currencyFormatting';
 
 interface ConversionSummaryProps {
   fromCurrency?: Currency;

@@ -58,11 +58,11 @@ export default class ExchangeRatesStore {
       });
 
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching exchange rates:", error);
       
       runInAction(() => {
-        this.setError(error.message || "Ошибка при загрузке курсов валют");
+        this.setError(error instanceof Error ? error.message : "Ошибка при загрузке курсов валют");
         this.setLoading(false);
       });
 
@@ -88,11 +88,11 @@ export default class ExchangeRatesStore {
       });
 
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error refreshing exchange rates:", error);
       
       runInAction(() => {
-        this.setError(error.message || "Ошибка при обновлении курсов");
+        this.setError(error instanceof Error ? error.message : "Ошибка при обновлении курсов");
         this.setIsRefreshing(false);
       });
 

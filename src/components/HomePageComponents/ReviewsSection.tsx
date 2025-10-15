@@ -28,7 +28,7 @@ const ReviewsSection = () => {
               className="bg-emerald-500/20 border border-emerald-500/30 hover:border-emerald-500/50 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300"
             >
               <blockquote className="text-lg text-default-700 mb-4 italic">
-                "{review.text}"
+              "&ldquo;{review.text}&rdquo;"
               </blockquote>
               <cite className="text-emerald-400 font-medium">
                 — {review.author}

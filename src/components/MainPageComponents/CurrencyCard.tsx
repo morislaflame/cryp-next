@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { GoShieldCheck, GoArrowSwitch } from 'react-icons/go';
+import { GoShieldCheck } from 'react-icons/go';
 import CustomInput from '../ui/CustomInput';
 import CustomTabs, { type TabItem } from '../ui/CustomTabs';
 import Divider from '../ui/Divider';
