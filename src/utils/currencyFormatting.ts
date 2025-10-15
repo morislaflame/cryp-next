@@ -1,4 +1,4 @@
-import { type Currency, type PaymentCurrencyOption } from '../types/currency';
+import { type Currency } from '../types/currency';
 
 /**
  * Получить правильный символ валюты для отображения
@@ -7,17 +7,10 @@ import { type Currency, type PaymentCurrencyOption } from '../types/currency';
  * @returns символ валюты для отображения
  */
 export const getDisplayCurrencySymbol = (
-  currency?: Currency, 
-  paymentCurrency?: PaymentCurrencyOption
+  currency?: Currency
 ): string => {
   if (!currency) return '';
   
-  // Для платежных систем показываем название выбранной валюты внутри ПС
-  if (currency.category === 'payment' && paymentCurrency) {
-    return paymentCurrency.name;
-  }
-  
-  // Для остальных валют показываем их символ
   return currency.symbol;
 };
 
@@ -28,23 +21,10 @@ export const getDisplayCurrencySymbol = (
  * @returns валюта для форматирования
  */
 export const getDisplayCurrency = (
-  currency?: Currency, 
-  paymentCurrency?: PaymentCurrencyOption
+  currency?: Currency
 ): Currency | undefined => {
   if (!currency) return undefined;
   
-  // Для платежных систем используем выбранную валюту внутри ПС для форматирования
-  if (currency.category === 'payment' && paymentCurrency) {
-    return {
-      id: paymentCurrency.id,
-      symbol: paymentCurrency.name, // Используем name как symbol
-      name: paymentCurrency.name,
-      category: 'fiat', // Платежные валюты форматируем как фиатные
-      icon: paymentCurrency.icon
-    } as Currency;
-  }
-  
-  // Для остальных валют используем их как есть
   return currency;
 };
 
@@ -54,13 +34,8 @@ export const getDisplayCurrency = (
  * @param paymentCurrencyName - название валюты внутри платежной системы (опционально)
  * @returns символ валюты для отображения
  */
-export const getProfileCurrencySymbol = (currency: Currency, paymentCurrencyName?: string): string => {
+export const getProfileCurrencySymbol = (currency: Currency): string => {
   if (!currency) return '';
-  
-  // Для платежных систем используем paymentCurrencyName, если оно есть
-  if (currency.category === 'payment' && paymentCurrencyName) {
-    return paymentCurrencyName;
-  }
   
   // Если это объект с полем symbol, используем его
   if (currency.symbol) {
@@ -81,19 +56,8 @@ export const getProfileCurrencySymbol = (currency: Currency, paymentCurrencyName
  * @param paymentCurrencyName - название валюты внутри платежной системы (опционально)
  * @returns валюта для форматирования
  */
-export const getProfileCurrency = (currency: Currency, paymentCurrencyName?: string): Currency | undefined => {
+export const getProfileCurrency = (currency: Currency): Currency | undefined => {
   if (!currency) return undefined;
-  
-  // Для платежных систем используем paymentCurrencyName для создания Currency
-  if (currency.category === 'payment' && paymentCurrencyName) {
-    return {
-      id: paymentCurrencyName.toLowerCase(),
-      symbol: paymentCurrencyName,
-      name: paymentCurrencyName,
-      category: 'fiat', // Платежные валюты форматируем как фиатные
-      icon: paymentCurrencyName
-    } as Currency;
-  }
   
   // Если это объект с полями валюты, создаем Currency
   if (currency.symbol && currency.category) {

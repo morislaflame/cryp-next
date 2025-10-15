@@ -58,26 +58,18 @@ const CurrencyCard: React.FC<CurrencyCardProps> = ({
             }
           `}>
             {currency.icon ? (
-              // Если иконка - это путь к файлу (содержит .png, .jpg и т.д.), показываем изображение
-              typeof currency.icon === 'string' && (currency.icon.includes('.png') || currency.icon.includes('.jpg') || currency.icon.includes('.svg')) ? (
-                <img 
-                  src={currency.icon} 
-                  alt={currency.name}
-                  className="w-6 h-6 object-contain"
-                />
-              ) : typeof currency.icon === 'object' && 'src' in currency.icon ? (
-                // Если это объект изображения Next.js
+              typeof currency.icon === 'object' && 'src' in currency.icon ? (
                 <img 
                   src={currency.icon.src} 
                   alt={currency.name}
                   className="w-6 h-6 object-contain"
                 />
+              ) : typeof currency.icon === 'string' ? (
+                <span className="text-lg">{currency.icon}</span>
               ) : (
-                // Иначе - это эмодзи или текст
-                currency.icon
+                currency.symbol.charAt(0)
               )
             ) : (
-              // Если иконки нет - первая буква символа
               currency.symbol.charAt(0)
             )}
           </div>

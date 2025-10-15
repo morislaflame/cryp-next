@@ -29,15 +29,6 @@ export const mockExchangeRates: ExchangeRate[] = [
   { from: 'usd', to: 'link', rate: 0.08 },  // 1 USD = 0.08 LINK
   { from: 'usd', to: 'avax', rate: 0.02 },   // 1 USD = 0.02 AVAX
   
-  // Платежные системы к USD
-  { from: 'usd', to: 'paypal', rate: 1.0 },     // 1 USD = 1 PayPal USD
-  { from: 'usd', to: 'skrill', rate: 1.0 },     // 1 USD = 1 Skrill USD
-  { from: 'usd', to: 'neteller', rate: 1.0 },  // 1 USD = 1 Neteller USD
-  { from: 'usd', to: 'webmoney', rate: 1.0 }, // 1 USD = 1 WebMoney USD
-  { from: 'usd', to: 'perfectmoney', rate: 1.0 }, // 1 USD = 1 Perfect Money USD
-  { from: 'usd', to: 'payeer', rate: 1.0 },    // 1 USD = 1 Payeer USD
-  { from: 'usd', to: 'advcash', rate: 1.0 },   // 1 USD = 1 AdvCash USD
-  { from: 'usd', to: 'qiwi', rate: 75.0 },    // 1 USD = 75 QIWI RUB
   
   // Обратные курсы (автоматически вычисляются)
   { from: 'eur', to: 'usd', rate: 1.18 },
@@ -60,15 +51,6 @@ export const mockExchangeRates: ExchangeRate[] = [
   { from: 'link', to: 'usd', rate: 12.5 },
   { from: 'avax', to: 'usd', rate: 50 },
   
-  // Платежные системы обратно к USD
-  { from: 'paypal', to: 'usd', rate: 1.0 },
-  { from: 'skrill', to: 'usd', rate: 1.0 },
-  { from: 'neteller', to: 'usd', rate: 1.0 },
-  { from: 'webmoney', to: 'usd', rate: 1.0 },
-  { from: 'perfectmoney', to: 'usd', rate: 1.0 },
-  { from: 'payeer', to: 'usd', rate: 1.0 },
-  { from: 'advcash', to: 'usd', rate: 1.0 },
-  { from: 'qiwi', to: 'usd', rate: 0.013 },
 ];
 
 // Функция для получения курса обмена (синхронная, использует моки как фоллбэк)

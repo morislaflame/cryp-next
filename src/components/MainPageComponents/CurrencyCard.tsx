@@ -5,7 +5,7 @@ import CustomTabs, { type TabItem } from '../ui/CustomTabs';
 import Divider from '../ui/Divider';
 import CurrencyCardList from './CurrencyCardList';
 import BankNetworkSelector from './BankNetworkSelector';
-import { type Currency, type BankOption, type NetworkOption, type PaymentCurrencyOption, mockCurrencies, categoryLabels } from '../../types/currency';
+import { type Currency, type BankOption, type NetworkOption, mockCurrencies, categoryLabels } from '../../types/currency';
 import { formatAmount } from '../../utils/formatNumbers';
 import './CurrencyCard.css';
 
@@ -14,27 +14,24 @@ interface CurrencyCardProps {
   onCurrencySelect?: (currency: Currency | undefined) => void;
   onAmountChange?: (amount: string) => void;
   onSearchChange?: (searchTerm: string) => void;
-  onFilterChange?: (activeFilter: 'all' | 'fiat' | 'crypto' | 'payment') => void;
+  onFilterChange?: (activeFilter: 'all' | 'fiat' | 'crypto') => void;
   onBankSelect?: (bank: BankOption) => void;
   onNetworkSelect?: (network: NetworkOption) => void;
-  onPaymentCurrencySelect?: (currency: PaymentCurrencyOption) => void;
   selectedCurrency?: Currency;
   selectedBank?: BankOption;
   selectedNetwork?: NetworkOption;
-  selectedPaymentCurrency?: PaymentCurrencyOption;
   amount?: string;
   searchTerm?: string;
-  activeFilter?: 'all' | 'fiat' | 'crypto' | 'payment';
+  activeFilter?: 'all' | 'fiat' | 'crypto';
   readOnly?: boolean; // Режим только для чтения
   displayOnly?: boolean; // Только отображение без инпута
 }
 
-type CategoryFilter = 'all' | 'fiat' | 'crypto' | 'payment';
+type CategoryFilter = 'all' | 'fiat' | 'crypto';
 
 const categoryIcons = {
   fiat: <GoShieldCheck className="w-4 h-4" />,
-  crypto: <GoShieldCheck className="w-4 h-4" />,
-  payment: <GoArrowSwitch className="w-4 h-4" />
+  crypto: <GoShieldCheck className="w-4 h-4" />
 };
 
 const createTabItems = (): TabItem[] => [
@@ -52,11 +49,6 @@ const createTabItems = (): TabItem[] => [
     label: categoryLabels.crypto,
     icon: categoryIcons.crypto,
   },
-  {
-    value: 'payment',
-    label: 'ПС',
-    icon: categoryIcons.payment,
-  },
 ];
 
 const CurrencyCard: React.FC<CurrencyCardProps> = ({
@@ -67,11 +59,9 @@ const CurrencyCard: React.FC<CurrencyCardProps> = ({
   onFilterChange,
   onBankSelect,
   onNetworkSelect,
-  onPaymentCurrencySelect,
   selectedCurrency,
   selectedBank,
   selectedNetwork,
-  selectedPaymentCurrency,
   amount = '',
   searchTerm = '',
   activeFilter = 'all',
@@ -138,24 +128,15 @@ const CurrencyCard: React.FC<CurrencyCardProps> = ({
                   </span>
                   {selectedCurrency && (
                     <div className="flex items-center gap-2 font-semibold justify-center">
-                      {selectedCurrency.icon && typeof selectedCurrency.icon === 'string' && (selectedCurrency.icon.includes('.png') || selectedCurrency.icon.includes('.jpg') || selectedCurrency.icon.includes('.svg')) ? (
-                        <img 
-                          src={selectedCurrency.icon} 
-                          alt={selectedCurrency.name}
-                          className="w-6 h-6 object-contain"
-                        />
-                      ) : typeof selectedCurrency.icon === 'object' && selectedCurrency.icon && 'src' in selectedCurrency.icon ? (
+                      {selectedCurrency.icon && typeof selectedCurrency.icon === 'object' && 'src' in selectedCurrency.icon ? (
                         <img 
                           src={selectedCurrency.icon.src} 
                           alt={selectedCurrency.name}
                           className="w-6 h-6 object-contain"
                         />
                       ) : (
-                        <span className="text-lg">{selectedCurrency.icon}</span>
+                        <span className="text-lg">{typeof selectedCurrency.icon === 'string' ? selectedCurrency.icon : selectedCurrency.symbol}</span>
                       )}
-                      {/* <span className="currency-symbol">
-                        {selectedCurrency.symbol}
-                      </span> */}
                     </div>
                   )}
                 </div>
@@ -274,27 +255,6 @@ const CurrencyCard: React.FC<CurrencyCardProps> = ({
           </>
         )}
 
-        {selectedCurrency?.paymentCurrencies && selectedCurrency.paymentCurrencies.length > 0 && (
-          <>
-            <BankNetworkSelector
-              type="currency"
-              options={selectedCurrency.paymentCurrencies}
-              selectedOption={selectedPaymentCurrency}
-              onSelect={(option) => {
-                if (onPaymentCurrencySelect) {
-                  onPaymentCurrencySelect(option as PaymentCurrencyOption);
-                }
-              }}
-            />
-            {!selectedPaymentCurrency && (
-              <div className="mt-2 p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-                <p className="text-xs text-yellow-400/80 text-center">
-                  Выберите валюту для расчета курса
-                </p>
-              </div>
-            )}
-          </>
-        )}
       </div>    
     </div>
   );

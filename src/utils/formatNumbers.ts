@@ -11,11 +11,11 @@ export const formatAmount = (amount: string | number, currency?: Currency): stri
   
   if (isNaN(num) || !amount) {
     // Для фиатных валют и платежек 2 знака, для криптовалют 6
-    return currency?.category === 'fiat' || currency?.category === 'payment' ? '0.00' : '0.000000';
+    return currency?.category === 'fiat' ? '0.00' : '0.000000';
   }
 
   // Определяем количество знаков после запятой
-  const decimals = currency?.category === 'fiat' || currency?.category === 'payment' ? 2 : 6;
+  const decimals = currency?.category === 'fiat' ? 2 : 6;
   
   // Форматируем число с нужным количеством знаков
   const formatted = num.toFixed(decimals);

@@ -3,13 +3,13 @@ import { observer } from 'mobx-react-lite';
 import { CiRepeat } from 'react-icons/ci';
 import Divider from '../ui/Divider';
 import SuccessModal from '../ui/SuccessModal';
-import { type Currency, type BankOption, type NetworkOption, type PaymentCurrencyOption } from '../../types/currency';
+import { type Currency, type BankOption, type NetworkOption } from '../../types/currency';
 import { useStore } from '../../store/StoreProvider';
 import { type CreateExchangeData } from '../../http/exchangeAPI';
 import { validationService } from '../../services/validationService';
 import { type ExchangeValidationData } from '../../types/validation';
 import { formatAmount, formatExchangeRate } from '../../utils/formatNumbers';
-import { getDisplayCurrencySymbol, getDisplayCurrency } from '../../utils/currencyFormatting';
+import { getDisplayCurrencySymbol } from '../../utils/currencyFormatting';
 
 interface ConversionSummaryProps {
   fromCurrency?: Currency;
@@ -21,10 +21,8 @@ interface ConversionSummaryProps {
   feePercent?: number; // Процент комиссии
   selectedBank?: BankOption; // Выбранный банк для рублей (получение)
   selectedNetwork?: NetworkOption; // Выбранная сеть для крипты (получение)
-  selectedPaymentCurrency?: PaymentCurrencyOption; // Выбранная валюта для платежки (получение)
   fromSelectedBank?: BankOption; // Выбранный банк для отправки
   fromSelectedNetwork?: NetworkOption; // Выбранная сеть для отправки
-  fromSelectedPaymentCurrency?: PaymentCurrencyOption; // Выбранная валюта для отправки
   onCreateOrder?: () => void;
 }
 
@@ -38,10 +36,8 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
   feePercent = 3,
   selectedBank,
   selectedNetwork,
-  selectedPaymentCurrency,
   fromSelectedBank,
   fromSelectedNetwork,
-  fromSelectedPaymentCurrency,
   onCreateOrder
 }) => {
   const { exchange: exchangeStore, user: userStore, exchangeRates } = useStore();
@@ -49,7 +45,6 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
   // Состояния для инпутов
   const [walletAddress, setWalletAddress] = useState('');
   const [cardNumber, setCardNumber] = useState('');
-  const [paymentDetails, setPaymentDetails] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   
   // Состояние для отслеживания попыток отправки формы
@@ -105,7 +100,6 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
   // Определяем какой инпут показывать
   const shouldShowCryptoInput = toCurrency?.category === 'crypto' && selectedNetwork;
   const shouldShowRubInput = toCurrency?.id === 'rub' && selectedBank && selectedBank.id !== 'cash';
-  const shouldShowPaymentInput = toCurrency?.category === 'payment' && selectedPaymentCurrency;
 
   // Подготавливаем данные для валидации
   const validationData: ExchangeValidationData = {
@@ -115,13 +109,10 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
     toAmount,
     fromSelectedBank,
     fromSelectedNetwork,
-    fromSelectedPaymentCurrency,
     selectedBank,
     selectedNetwork,
-    selectedPaymentCurrency,
     walletAddress,
     cardNumber,
-    paymentDetails,
     // Используем данные пользователя, если они есть, иначе поля формы
     recipientEmail: userStore.user?.email || recipientEmail,
     recipientTelegramUsername: userStore.user?.username || recipientTelegramUsername,
@@ -155,7 +146,6 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
           amount: fromAmount,
           bankName: fromSelectedBank?.name,
           networkName: fromSelectedNetwork?.name,
-          paymentCurrencyName: fromSelectedPaymentCurrency?.name
         },
         to: {
           currency: {
@@ -166,13 +156,11 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
           amount: toAmount,
           bankName: selectedBank?.name,
           networkName: selectedNetwork?.name,
-          paymentCurrencyName: selectedPaymentCurrency?.name
         },
 
         // Реквизиты для получения
         recipientAddress: walletAddress || undefined,
         recipientCard: cardNumber || undefined,
-        recipientPaymentDetails: paymentDetails || undefined,
 
         // Курс обмена и комиссия
         exchangeRate: exchangeRate?.toString(),
@@ -197,7 +185,6 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
         // Очищаем инпуты
         setWalletAddress('');
         setCardNumber('');
-        setPaymentDetails('');
         // Очищаем только если у пользователя нет этих данных
         if (!userStore.user?.email) {
           setRecipientEmail('');
@@ -244,26 +231,17 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
                 {formatAmount(fromAmount, fromCurrency)}
               </div>
               {fromCurrency && (
-              <div className="flex items-center gap-2 font-semibold text-lg justify-center">
-                {fromCurrency.icon && typeof fromCurrency.icon === 'string' && (fromCurrency.icon.includes('.png') || fromCurrency.icon.includes('.jpg') || fromCurrency.icon.includes('.svg')) ? (
-                  <img 
-                    src={fromCurrency.icon} 
-                    alt={fromCurrency.name}
-                    className="w-6 h-6 object-contain"
-                  />
-                ) : fromCurrency.icon && typeof fromCurrency.icon === 'object' && 'src' in fromCurrency.icon ? (
-                  <img 
-                    src={fromCurrency.icon.src} 
-                    alt={fromCurrency.name}
-                    className="w-6 h-6 object-contain"
-                  />
-                ) : (
-                  <span className="text-lg">{typeof fromCurrency.icon === 'string' ? fromCurrency.icon : fromCurrency.symbol}</span>
-                )}
-                    {/* <span className="currency-symbol" >
-                      {fromCurrency.symbol}
-                    </span> */}
-              </div>
+                <div className="flex items-center gap-2 font-semibold text-lg justify-center">
+                  {fromCurrency.icon && typeof fromCurrency.icon === 'object' && 'src' in fromCurrency.icon ? (
+                    <img 
+                      src={fromCurrency.icon.src} 
+                      alt={fromCurrency.name}
+                      className="w-6 h-6 object-contain"
+                    />
+                  ) : (
+                    <span className="text-lg">{typeof fromCurrency.icon === 'string' ? fromCurrency.icon : fromCurrency.symbol}</span>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -284,8 +262,8 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/70">Сумма без комиссии:</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-white font-semibold">{formatAmount(toAmountWithoutFee, getDisplayCurrency(toCurrency, selectedPaymentCurrency))}</span>
-                  <span className=" font-semibold">{getDisplayCurrencySymbol(toCurrency, selectedPaymentCurrency)}</span>
+                  <span className="text-white font-semibold">{formatAmount(toAmountWithoutFee, toCurrency)}</span>
+                  <span className=" font-semibold">{toCurrency?.symbol}</span>
                 </div>
               </div>
 
@@ -293,8 +271,8 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/70">Комиссия сервиса ({feePercent}%):</span>
                 <div className="flex items-center gap-2">
-                  <span className=" font-semibold">-{formatAmount(feeAmount, getDisplayCurrency(toCurrency, selectedPaymentCurrency))}</span>
-                  <span className=" font-semibold">{getDisplayCurrencySymbol(toCurrency, selectedPaymentCurrency)}</span>
+                  <span className=" font-semibold">-{formatAmount(feeAmount, toCurrency)}</span>
+                  <span className=" font-semibold">{toCurrency?.symbol}</span>
                 </div>
               </div>
 
@@ -305,8 +283,8 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
               <div className="flex items-center justify-between">
                 <span className="text-white font-semibold">Итого к получению:</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-emerald-400 font-bold text-lg">{formatAmount(toAmount, getDisplayCurrency(toCurrency, selectedPaymentCurrency))}</span>
-                  <span className="text-emerald-400 font-bold">{getDisplayCurrencySymbol(toCurrency, selectedPaymentCurrency)}</span>
+                  <span className="text-emerald-400 font-bold text-lg">{formatAmount(toAmount, toCurrency!)}</span>
+                  <span className="text-emerald-400 font-bold">{toCurrency?.symbol}</span>
                 </div>
               </div>
             </div>
@@ -318,11 +296,11 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
               <div className="flex items-center justify-between gap-2">
                 <p className="text-sm text-white/70">К получению:</p>
                 <div className="text-white text-lg font-bold flex-grow">
-                  {formatAmount(toAmount, getDisplayCurrency(toCurrency, selectedPaymentCurrency))}
+                  {formatAmount(toAmount, toCurrency!)}
                 </div>
                 <div className="flex items-center gap-2 text-emerald-400 font-semibold text-sm px-2 py-1 border border-emerald-500/20 rounded-lg backdrop-blur-sm justify-center">
                   <span className="font-bold ">
-                    {getDisplayCurrencySymbol(toCurrency, selectedPaymentCurrency)}
+                    {toCurrency?.symbol}
                   </span>
                 </div>
               </div>
@@ -360,13 +338,7 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
                 className="w-full px-4 py-3 pr-32 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                {toCurrency?.icon && typeof toCurrency.icon === 'string' && (toCurrency.icon.includes('.png') || toCurrency.icon.includes('.jpg') || toCurrency.icon.includes('.svg')) ? (
-                  <img 
-                    src={toCurrency.icon} 
-                    alt={toCurrency.name}
-                    className="w-6 h-6 object-contain"
-                  />
-                ) : toCurrency?.icon && typeof toCurrency.icon === 'object' && 'src' in toCurrency.icon ? (
+                {toCurrency?.icon && typeof toCurrency.icon === 'object' && 'src' in toCurrency.icon ? (
                   <img 
                     src={toCurrency.icon.src} 
                     alt={toCurrency.name}
@@ -396,50 +368,20 @@ const ConversionSummary: React.FC<ConversionSummaryProps> = observer(({
                 className="w-full px-4 py-3 pr-20 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                {selectedBank?.icon && (
+                {selectedBank?.icon && typeof selectedBank.icon === 'object' && 'src' in selectedBank.icon ? (
                   <img 
-                    src={selectedBank.icon} 
+                    src={selectedBank.icon.src} 
                     alt={selectedBank.name}
                     className="w-6 h-6 object-contain"
                   />
-                )}
+                ) : selectedBank?.icon && typeof selectedBank.icon === 'string' ? (
+                  <span className="text-lg">{selectedBank.icon}</span>
+                ) : null}
               </div>
             </div>
           </div>
         )}
 
-        {/* Инпут реквизитов для платежных систем */}
-        {shouldShowPaymentInput && (
-          <div className="space-y-2">
-            <label className="text-sm text-white/70 font-medium">Реквизиты для получения</label>
-            <div className="relative mt-2">
-              <input
-                type="text"
-                value={paymentDetails}
-                onChange={(e) => setPaymentDetails(e.target.value)}
-                placeholder={`Введите реквизиты ${toCurrency?.name}`}
-                className="w-full px-4 py-3 pr-20 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                {toCurrency?.icon && typeof toCurrency.icon === 'string' && (toCurrency.icon.includes('.png') || toCurrency.icon.includes('.jpg') || toCurrency.icon.includes('.svg')) ? (
-                  <img 
-                    src={toCurrency.icon} 
-                    alt={toCurrency.name}
-                    className="w-6 h-6 object-contain"
-                  />
-                ) : toCurrency?.icon && typeof toCurrency.icon === 'object' && 'src' in toCurrency.icon ? (
-                  <img 
-                    src={toCurrency.icon.src} 
-                    alt={toCurrency.name}
-                    className="w-6 h-6 object-contain"
-                  />
-                ) : (
-                  <span className="text-2xl">{typeof toCurrency?.icon === 'string' ? toCurrency.icon : toCurrency?.symbol}</span>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Поля контактных данных для гостевых пользователей или если у авторизованного пользователя нет данных */}
         {(!userStore.isAuth || !userStore.user?.email || !userStore.user?.username) && (

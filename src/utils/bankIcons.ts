@@ -1,31 +1,20 @@
-// Импорт иконок банков
-import sberIcon from '../assets/sber.png';
-import tinkoffIcon from '../assets/tbank.png';
-import vtbIcon from '../assets/vtb.png';
-import alfaIcon from '../assets/alfa.png';
-import raiffIcon from '../assets/raiff.png';
-import gazpromIcon from '../assets/gazprom.png';
-import rosbankIcon from '../assets/rosbank.png';
-import mkbIcon from '../assets/mkb.png';
-import otkritieIcon from '../assets/otkritie.png';
-import ozonIcon from '../assets/ozon.png';
-import psbIcon from '../assets/psb.png';
-import sinaraIcon from '../assets/sinara.png';
-import sovkomIcon from '../assets/sovkom.png';
+// Импорт иконок банков (только SVG)
+import { StaticImageData } from 'next/image';
+import sberIcon from '../assets/sber.svg';
+import tinkoffIcon from '../assets/tinkoff.svg';
+import vtbIcon from '../assets/vtb.svg';
+import alfaIcon from '../assets/alfa.svg';
+import raiffIcon from '../assets/raiffeisen.svg';
+import gazpromIcon from '../assets/gazprom.svg';
+import rosbankIcon from '../assets/ros.svg';
+import mkbIcon from '../assets/mkb.svg';
+import otkritieIcon from '../assets/open.svg';
+import ozonIcon from '../assets/open.svg';
+import psbIcon from '../assets/psb.svg';
+import sinaraIcon from '../assets/skbbank.svg';
+import sovkomIcon from '../assets/sovcombank.svg';
 
-// Импорт иконок платежных систем
-import paypalIcon from '../assets/paypal.png';
-import qiwiIcon from '../assets/qiwi.png';
-import webmoneyIcon from '../assets/webmoney.png';
-import yoomoneyIcon from '../assets/yoomoney.png';
-import yandexIcon from '../assets/yandex.png';
-import skrillIcon from '../assets/skrill.png';
-import netellerIcon from '../assets/neteller.png';
-import payeerIcon from '../assets/payeer.png';
-import perfectmoneyIcon from '../assets/perfectmoney.png';
-import advcashIcon from '../assets/advcash (1).png';
-
-// Импорт иконок криптовалют
+// Импорт иконок криптовалют (только PNG)
 import btcIcon from '../assets/btc.png';
 import ethIcon from '../assets/eth.png';
 import usdtIcon from '../assets/usdt.png';
@@ -47,8 +36,12 @@ import usdcIcon from '../assets/usdc.png';
 import usdeIcon from '../assets/usde.png';
 import shibIcon from '../assets/shib.png';
 
-// Экспорт иконок банков
-export const bankIcons = {
+// Типы для иконок
+export type BankIcon = StaticImageData; // SVG иконки банков
+export type CryptoIcon = StaticImageData; // PNG иконки криптовалют
+
+// Экспорт иконок банков (только SVG)
+export const bankIcons: Record<string, BankIcon> = {
   sberbank: sberIcon,
   tinkoff: tinkoffIcon,
   vtb: vtbIcon,
@@ -64,22 +57,8 @@ export const bankIcons = {
   sovkombank: sovkomIcon,
 };
 
-// Экспорт иконок платежных систем
-export const paymentIcons = {
-  paypal: paypalIcon,
-  qiwi: qiwiIcon,
-  webmoney: webmoneyIcon,
-  yoomoney: yoomoneyIcon,
-  yandexpay: yandexIcon,
-  skrill: skrillIcon,
-  neteller: netellerIcon,
-  payeer: payeerIcon,
-  perfectmoney: perfectmoneyIcon,
-  advcash: advcashIcon,
-};
-
-// Экспорт иконок криптовалют
-export const cryptoIcons = {
+// Экспорт иконок криптовалют (только PNG)
+export const cryptoIcons: Record<string, CryptoIcon> = {
   btc: btcIcon,
   eth: ethIcon,
   usdt: usdtIcon,
@@ -102,16 +81,13 @@ export const cryptoIcons = {
   shib: shibIcon,
 };
 
-// Универсальная функция для получения иконки
-export const getBankIcon = (bankId: string): string | undefined => {
-  return bankIcons[bankId as keyof typeof bankIcons];
+// Универсальная функция для получения иконки банка (только SVG)
+export const getBankIcon = (bankId: string): BankIcon | undefined => {
+  return bankIcons[bankId];
 };
 
-export const getPaymentIcon = (paymentId: string): string | undefined => {
-  return paymentIcons[paymentId as keyof typeof paymentIcons];
-};
-
-export const getCryptoIcon = (cryptoId: string): string | undefined => {
-  return cryptoIcons[cryptoId as keyof typeof cryptoIcons];
+// Универсальная функция для получения иконки криптовалюты (только PNG)
+export const getCryptoIcon = (cryptoId: string): CryptoIcon | undefined => {
+  return cryptoIcons[cryptoId];
 };
 

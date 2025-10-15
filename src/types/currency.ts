@@ -1,18 +1,12 @@
-import { bankIcons, paymentIcons, cryptoIcons } from '../utils/bankIcons';
+import { bankIcons, cryptoIcons, BankIcon, CryptoIcon } from '../utils/bankIcons';
 
 export interface BankOption {
   id: string;
   name: string;
-  icon?: string;
+  icon?: BankIcon | string; // SVG иконка банка или строка для наличных
 }
 
 export interface NetworkOption {
-  id: string;
-  name: string;
-  icon?: string;
-}
-
-export interface PaymentCurrencyOption {
   id: string;
   name: string;
   icon?: string;
@@ -22,11 +16,10 @@ export interface Currency {
   id: string;
   name: string;
   symbol: string;
-  category: 'fiat' | 'crypto' | 'payment';
-  icon?: React.ReactNode | string | { src: string; width: number; height: number; blurWidth?: number; blurHeight?: number; blurDataURL?: string }; // Может быть компонент React, путь к изображению или объект Next.js
+  category: 'fiat' | 'crypto';
+  icon?: CryptoIcon | string; // Для криптовалют - PNG иконка, для фиата - строка
   banks?: BankOption[]; // Доступные банки для фиатных валют
   networks?: NetworkOption[]; // Доступные сети для криптовалют
-  paymentCurrencies?: PaymentCurrencyOption[]; // Доступные валюты для платежных систем
 }
 
 export const mockCurrencies: Currency[] = [
@@ -228,117 +221,10 @@ export const mockCurrencies: Currency[] = [
     ]
   },
   
-  // Платежные системы
-  { 
-    id: 'paypal', 
-    name: 'PayPal', 
-    symbol: 'PayPal', 
-    category: 'payment', 
-    icon: paymentIcons.paypal,
-    paymentCurrencies: [
-      { id: 'usd', name: 'USD', icon: '🇺🇸' },
-      { id: 'eur', name: 'EUR', icon: '🇪🇺' },
-      { id: 'gbp', name: 'GBP', icon: '🇬🇧' },
-      { id: 'rub', name: 'RUB', icon: '🇷🇺' },
-    ]
-  },
-  { 
-    id: 'skrill', 
-    name: 'Skrill', 
-    symbol: 'Skrill', 
-    category: 'payment', 
-    icon: paymentIcons.skrill,
-    paymentCurrencies: [
-      { id: 'usd', name: 'USD', icon: '🇺🇸' },
-      { id: 'eur', name: 'EUR', icon: '🇪🇺' },
-      { id: 'gbp', name: 'GBP', icon: '🇬🇧' },
-    ]
-  },
-  { 
-    id: 'neteller', 
-    name: 'Neteller', 
-    symbol: 'Neteller', 
-    category: 'payment', 
-    icon: paymentIcons.neteller,
-    paymentCurrencies: [
-      { id: 'usd', name: 'USD', icon: '🇺🇸' },
-      { id: 'eur', name: 'EUR', icon: '🇪🇺' },
-      { id: 'gbp', name: 'GBP', icon: '🇬🇧' },
-    ]
-  },
-  { 
-    id: 'webmoney', 
-    name: 'WebMoney', 
-    symbol: 'WMZ', 
-    category: 'payment', 
-    icon: paymentIcons.webmoney,
-    paymentCurrencies: [
-      { id: 'wmz', name: 'WMZ (USD)', icon: '💵' },
-      { id: 'wme', name: 'WME (EUR)', icon: '💶' },
-      { id: 'wmr', name: 'WMR (RUB)', icon: '🇷🇺' },
-    ]
-  },
-  { 
-    id: 'perfectmoney', 
-    name: 'Perfect Money', 
-    symbol: 'PM', 
-    category: 'payment', 
-    icon: paymentIcons.perfectmoney,
-    paymentCurrencies: [
-      { id: 'usd', name: 'USD', icon: '🇺🇸' },
-      { id: 'eur', name: 'EUR', icon: '🇪🇺' },
-    ]
-  },
-  { 
-    id: 'yoomoney', 
-    name: 'ЮMoney', 
-    symbol: 'ЮMoney', 
-    category: 'payment', 
-    icon: paymentIcons.yoomoney,
-    paymentCurrencies: [
-      { id: 'rub', name: 'RUB', icon: '🇷🇺' },
-    ]
-  },
-  { 
-    id: 'payeer', 
-    name: 'Payeer', 
-    symbol: 'Payeer', 
-    category: 'payment', 
-    icon: paymentIcons.payeer,
-    paymentCurrencies: [
-      { id: 'usd', name: 'USD', icon: '🇺🇸' },
-      { id: 'eur', name: 'EUR', icon: '🇪🇺' },
-      { id: 'rub', name: 'RUB', icon: '🇷🇺' },
-    ]
-  },
-  { 
-    id: 'advcash', 
-    name: 'AdvCash', 
-    symbol: 'ADV', 
-    category: 'payment', 
-    icon: paymentIcons.advcash,
-    paymentCurrencies: [
-      { id: 'usd', name: 'USD', icon: '🇺🇸' },
-      { id: 'eur', name: 'EUR', icon: '🇪🇺' },
-      { id: 'rub', name: 'RUB', icon: '🇷🇺' },
-      { id: 'uah', name: 'UAH', icon: '🇺🇦' },
-    ]
-  },
-  { 
-    id: 'qiwi', 
-    name: 'QIWI', 
-    symbol: 'QIWI', 
-    category: 'payment', 
-    icon: paymentIcons.qiwi,
-    paymentCurrencies: [
-      { id: 'rub', name: 'RUB', icon: '🇷🇺' },
-      { id: 'kzt', name: 'KZT', icon: '🇰🇿' },
-    ]
-  },
+  
 ];
 
 export const categoryLabels = {
   fiat: 'Фиат',
   crypto: 'Крипто',
-  payment: 'Плат. система'
 };

@@ -3,7 +3,7 @@ import { $authHost, $host } from "./index";
 export interface CurrencyInfo {
   id: string;
   symbol: string;
-  category: 'fiat' | 'crypto' | 'payment';
+  category: 'fiat' | 'crypto';
 }
 
 export interface ExchangeDirection {
@@ -11,7 +11,6 @@ export interface ExchangeDirection {
   amount: string;
   bankName?: string;
   networkName?: string;
-  paymentCurrencyName?: string;
 }
 
 export interface CreateExchangeData {
@@ -22,7 +21,6 @@ export interface CreateExchangeData {
   // Реквизиты для получения
   recipientAddress?: string;
   recipientCard?: string;
-  recipientPaymentDetails?: string;
   
   // Курс обмена и комиссия
   exchangeRate?: string;
@@ -45,7 +43,6 @@ export interface Exchange {
   // Реквизиты для получения
   recipientAddress?: string;
   recipientCard?: string;
-  recipientPaymentDetails?: string;
   
   // Курс обмена и комиссия
   exchangeRate?: string;

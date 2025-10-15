@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import type { BankOption, NetworkOption, PaymentCurrencyOption } from '../../types/currency';
+import type { BankOption, NetworkOption } from '../../types/currency';
 
 interface OptionCardProps {
-  option: BankOption | NetworkOption | PaymentCurrencyOption;
+  option: BankOption | NetworkOption;
   isSelected: boolean;
   isHovered: boolean;
   onClick: () => void;
@@ -49,17 +49,11 @@ const OptionCard: React.FC<OptionCardProps> = ({
             }
           `}>
             {option.icon ? (
-              // Если иконка - это путь к файлу (содержит .png, .jpg и т.д.), показываем изображение
-              typeof option.icon === 'string' && (option.icon.includes('.png') || option.icon.includes('.jpg') || option.icon.includes('.svg')) ? (
                 <img 
-                  src={option.icon} 
+                  src={option.icon as string} 
                   alt={option.name}
                   className="w-4 h-4 object-contain"
                 />
-              ) : (
-                // Иначе - это эмодзи или текст
-                option.icon
-              )
             ) : (
               // Если иконки нет - первая буква названия
               option.name.charAt(0)
@@ -97,10 +91,10 @@ const OptionCard: React.FC<OptionCardProps> = ({
 };
 
 interface BankNetworkSelectorProps {
-  type: 'bank' | 'network' | 'currency';
-  options: BankOption[] | NetworkOption[] | PaymentCurrencyOption[];
-  selectedOption?: BankOption | NetworkOption | PaymentCurrencyOption;
-  onSelect: (option: BankOption | NetworkOption | PaymentCurrencyOption) => void;
+  type: 'bank' | 'network';
+  options: BankOption[] | NetworkOption[];
+  selectedOption?: BankOption | NetworkOption;
+  onSelect: (option: BankOption | NetworkOption) => void;
 }
 
 const BankNetworkSelector: React.FC<BankNetworkSelectorProps> = ({
@@ -111,7 +105,7 @@ const BankNetworkSelector: React.FC<BankNetworkSelectorProps> = ({
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
 
-  const handleOptionClick = (option: BankOption | NetworkOption | PaymentCurrencyOption) => {
+  const handleOptionClick = (option: BankOption | NetworkOption) => {
     onSelect(option);
   };
 
@@ -123,7 +117,7 @@ const BankNetworkSelector: React.FC<BankNetworkSelectorProps> = ({
     return hoveredIndex === index && !isSelected(index);
   };
 
-  const title = type === 'bank' ? 'Выберите банк' : type === 'network' ? 'Выберите сеть' : 'Выберите валюту';
+  const title = type === 'bank' ? 'Выберите банк' : type === 'network' ? 'Выберите сеть' : '';
 
   return (
     <motion.div

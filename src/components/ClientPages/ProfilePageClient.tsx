@@ -212,7 +212,7 @@ const ProfilePageClient = observer(() => {
                   <div className="bg-white/5 rounded-lg p-4">
                     <h4 className="text-sm font-medium text-gray-300 mb-2">Отправляете</h4>
                     <div className="text-white font-semibold text-lg">
-                      {formatAmount(exchangeItem.from.amount, getProfileCurrency(exchangeItem.from.currency as Currency, exchangeItem.from.paymentCurrencyName))} {getProfileCurrencySymbol(exchangeItem.from.currency as Currency, exchangeItem.from.paymentCurrencyName)}
+                      {formatAmount(exchangeItem.from.amount, getProfileCurrency(exchangeItem.from.currency as Currency))} {getProfileCurrencySymbol(exchangeItem.from.currency as Currency)}
                     </div>
                     {exchangeItem.from.bankName && (
                       <p className="text-gray-300 text-sm mt-1">
@@ -230,7 +230,7 @@ const ProfilePageClient = observer(() => {
                   <div className="bg-white/5 rounded-lg p-4">
                     <h4 className="text-sm font-medium text-gray-300 mb-2">Получаете</h4>
                     <div className="text-white font-semibold text-lg">
-                      {formatAmount(exchangeItem.to.amount, getProfileCurrency(exchangeItem.to.currency as Currency, exchangeItem.to.paymentCurrencyName))} {getProfileCurrencySymbol(exchangeItem.to.currency as Currency, exchangeItem.to.paymentCurrencyName)}
+                      {formatAmount(exchangeItem.to.amount, getProfileCurrency(exchangeItem.to.currency as Currency))} {getProfileCurrencySymbol(exchangeItem.to.currency as Currency)}
                     </div>
                     {exchangeItem.to.bankName && (
                       <p className="text-gray-300 text-sm mt-1">
@@ -246,7 +246,7 @@ const ProfilePageClient = observer(() => {
                 </div>
 
                 {/* Реквизиты */}
-                {(exchangeItem.recipientAddress || exchangeItem.recipientCard || exchangeItem.recipientPaymentDetails) && (
+                {(exchangeItem.recipientAddress || exchangeItem.recipientCard) && (
                   <div className="mb-4">
                     <h4 className="text-sm font-medium text-gray-300 mb-2">Реквизиты для получения</h4>
                     <div className="bg-white/5 rounded-lg p-3">
@@ -260,11 +260,6 @@ const ProfilePageClient = observer(() => {
                           <span className="text-gray-300">Карта/телефон:</span> {exchangeItem.recipientCard}
                         </p>
                       )}
-                      {exchangeItem.recipientPaymentDetails && (
-                        <p className="text-white text-sm">
-                          <span className="text-gray-300">Детали:</span> {exchangeItem.recipientPaymentDetails}
-                        </p>
-                      )}
                     </div>
                   </div>
                 )}
@@ -272,7 +267,7 @@ const ProfilePageClient = observer(() => {
                 {/* Комиссия и курс */}
                 <div className="flex justify-between items-center text-sm">
                   <div className="text-gray-300">
-                    Комиссия: {formatAmount(exchangeItem.feeAmount || '0', getProfileCurrency(exchangeItem.to.currency as Currency, exchangeItem.to.paymentCurrencyName))} {getProfileCurrencySymbol(exchangeItem.to.currency as Currency, exchangeItem.to.paymentCurrencyName)} ({exchangeItem.feePercent}%)
+                    Комиссия: {formatAmount(exchangeItem.feeAmount || '0', getProfileCurrency(exchangeItem.to.currency as Currency))} {getProfileCurrencySymbol(exchangeItem.to.currency as Currency)} ({exchangeItem.feePercent}%)
                   </div>
                   {exchangeItem.exchangeRate && (
                     <div className="text-gray-300">

@@ -1,4 +1,4 @@
-import { type Currency, type BankOption, type NetworkOption, type PaymentCurrencyOption } from './currency';
+import { type Currency, type BankOption, type NetworkOption } from './currency';
 
 // Интерфейс для данных валидации заявки
 export interface ExchangeValidationData {
@@ -11,17 +11,14 @@ export interface ExchangeValidationData {
   // Опции для отправки
   fromSelectedBank?: BankOption;
   fromSelectedNetwork?: NetworkOption;
-  fromSelectedPaymentCurrency?: PaymentCurrencyOption;
   
   // Опции для получения
   selectedBank?: BankOption;
   selectedNetwork?: NetworkOption;
-  selectedPaymentCurrency?: PaymentCurrencyOption;
   
   // Реквизиты для получения
   walletAddress?: string;
   cardNumber?: string;
-  paymentDetails?: string;
   
   recipientEmail?: string;
   recipientTelegramUsername?: string;

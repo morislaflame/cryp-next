@@ -3,7 +3,7 @@ import {
   type ValidationResult, 
   type DetailedValidationResult 
 } from '../types/validation';
-import { type Currency, type NetworkOption, type BankOption, type PaymentCurrencyOption } from '../types/currency';
+import { type Currency, type NetworkOption, type BankOption } from '../types/currency';
 
 /**
  * Сервис валидации полей для заявок на обмен
@@ -56,12 +56,6 @@ class ValidationService {
       }
     }
     
-    // Если у валюты есть платежные валюты (платежка) - должна быть выбрана валюта
-    if (data.fromCurrency.category === 'payment' && data.fromCurrency.paymentCurrencies?.length) {
-      if (!data.fromSelectedPaymentCurrency) {
-        return { valid: false, error: 'Не выбрана платежная валюта для отправки' };
-      }
-    }
 
     return { valid: true };
   }
@@ -88,12 +82,6 @@ class ValidationService {
       }
     }
     
-    // Если у валюты есть платежные валюты (платежка) - должна быть выбрана валюта
-    if (data.toCurrency.category === 'payment' && data.toCurrency.paymentCurrencies?.length) {
-      if (!data.selectedPaymentCurrency) {
-        return { valid: false, error: 'Не выбрана платежная валюта для получения' };
-      }
-    }
 
     return { valid: true };
   }
@@ -132,7 +120,6 @@ class ValidationService {
     // Определяем какой инпут должен быть заполнен
     const shouldShowCryptoInput = data.toCurrency.category === 'crypto' && data.selectedNetwork;
     const shouldShowRubInput = data.toCurrency.id === 'rub' && data.selectedBank && data.selectedBank.id !== 'cash';
-    const shouldShowPaymentInput = data.toCurrency.category === 'payment' && data.selectedPaymentCurrency;
 
     if (shouldShowCryptoInput) {
       if (!data.walletAddress || data.walletAddress.trim() === '') {
@@ -146,11 +133,6 @@ class ValidationService {
       }
     }
 
-    if (shouldShowPaymentInput) {
-      if (!data.paymentDetails || data.paymentDetails.trim() === '') {
-        return { valid: false, error: 'Не указаны реквизиты для получения' };
-      }
-    }
 
     return { valid: true };
   }
@@ -319,10 +301,8 @@ class ValidationService {
     toCurrency: Currency,
     selectedNetwork?: NetworkOption,
     selectedBank?: BankOption,
-    selectedPaymentCurrency?: PaymentCurrencyOption,
     walletAddress?: string,
-    cardNumber?: string,
-    paymentDetails?: string
+    cardNumber?: string
   ): ValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -333,7 +313,6 @@ class ValidationService {
 
     const shouldShowCryptoInput = toCurrency.category === 'crypto' && selectedNetwork;
     const shouldShowRubInput = toCurrency.id === 'rub' && selectedBank && selectedBank.id !== 'cash';
-    const shouldShowPaymentInput = toCurrency.category === 'payment' && selectedPaymentCurrency;
 
     if (shouldShowCryptoInput) {
       if (!walletAddress || walletAddress.trim() === '') {
@@ -347,11 +326,6 @@ class ValidationService {
       }
     }
 
-    if (shouldShowPaymentInput) {
-      if (!paymentDetails || paymentDetails.trim() === '') {
-        errors.push('Не указаны реквизиты для получения');
-      }
-    }
 
     return {
       isValid: errors.length === 0,
