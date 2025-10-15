@@ -58,8 +58,8 @@ const AuthPageClient = () => {
       } else {
         await user.registration(email, password);
       }
-    } catch (error: any) {
-      setError(error.response?.data?.message || 'Произошла ошибка');
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Произошла ошибка');
     } finally {
       setLoading(false);
     }
