@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../store/StoreProvider';

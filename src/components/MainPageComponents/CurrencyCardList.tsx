@@ -1,3 +1,6 @@
+'use client';
+
+
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'motion/react';
 import type { Currency } from '../../types/currency';

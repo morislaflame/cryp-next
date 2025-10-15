@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useMemo } from 'react';
 import { GoShieldCheck } from 'react-icons/go';
 import CustomInput from '../ui/CustomInput';

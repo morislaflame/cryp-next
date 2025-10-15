@@ -41,10 +41,15 @@ interface StoreProviderProps {
 const StoreProvider = ({ children }: StoreProviderProps) => {
   const [stores, setStores] = useState<IStoreContext | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     // Проверяем, что мы на клиенте
-    if (typeof window === 'undefined') return;
+    if (!isClient) return;
     
     // Если уже инициализированы, не делаем это снова
     if (isInitialized) return;
@@ -72,14 +77,10 @@ const StoreProvider = ({ children }: StoreProviderProps) => {
     };
 
     initializeStores();
-  }, [isInitialized]);
+  }, [isInitialized, isClient]);
 
-  // Если мы на сервере, возвращаем children без StoreProvider
-  if (typeof window === 'undefined') {
-    return <>{children}</>;
-  }
-
-  if (!stores) {
+  // Пока не на клиенте или сторы не инициализированы, показываем loading
+  if (!isClient || !stores) {
     return <LoadingIndicator />;
   }
 

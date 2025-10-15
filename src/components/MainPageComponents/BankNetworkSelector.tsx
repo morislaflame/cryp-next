@@ -1,3 +1,6 @@
+'use client';
+
+
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import type { BankOption, NetworkOption } from '../../types/currency';
